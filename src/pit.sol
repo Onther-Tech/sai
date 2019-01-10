@@ -18,7 +18,7 @@
 pragma solidity ^0.4.18;
 
 import "ds-token/token.sol";
-import "ds-token/requestable.sol";
+import "requestable-ds-token/RequestableToken.sol";
 
 contract GemPit {
     function burn(DSToken gem) public {

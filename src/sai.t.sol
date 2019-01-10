@@ -145,7 +145,7 @@ contract SaiTestBase is DSTest, DSMath {
         else if (address(tkn) == address(gem)) mark(price);
     }
 
-    function mark(RQToken tkn, uint price) internal {
+    function rmark(RQToken tkn, uint price) internal {
         if (address(tkn) == address(gov)) pep.poke(bytes32(price));
         else if (address(tkn) == address(gem)) mark(price);
     }
@@ -203,7 +203,7 @@ contract SaiTestBase is DSTest, DSMath {
         skr.approve(tap);
 
         mark(1 ether);
-        mark(gov, 1 ether);
+        rmark(gov, 1 ether);
 
         mom.setCap(20 ether);
         mom.setAxe(ray(1 ether));
