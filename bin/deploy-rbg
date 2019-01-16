@@ -10,8 +10,8 @@ export ETH_FROM=${ETH_FROM:-$(seth rpc eth_coinbase)}
 (test -z $GEM_FAB || test -z $RGEM_FAB || test -z $VOX_FAB || test -z $TUB_FAB || test -z $TAP_FAB  || test -z $TOP_FAB || test -z $MOM_FAB || test -z $DAD_FAB) && exit 1
 
 export SETH_ASYNC=yes
-test -z $SAI_GEM && GEMtx=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'ETH'))) 
-test -z $SAI_GOV && GOVtx=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'GOV')))
+test -z $SAI_GEM && GEMtx=$(dapp create WETH9)
+test -z $SAI_GOV && GOVtx=$(dapp create WETH9)
 test -z $SAI_PIP && PIPtx=$(dapp create DSValue)
 test -z $SAI_PEP && PEPtx=$(dapp create DSValue)
 export SETH_ASYNC=no
