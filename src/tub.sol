@@ -32,13 +32,13 @@ contract SaiTubEvents {
 }
 
 contract SaiTub is DSThing, SaiTubEvents {
-    RQToken  public  sai;  // Stablecoin
+    RequestableToken  public  sai;  // Stablecoin
     DSToken  public  sin;  // Debt (negative sai)
 
     DSToken  public  skr;  // Abstracted collateral
     ERC20    public  gem;  // Underlying collateral
 
-    RQToken  public  gov;  // Governance token
+    RequestableToken  public  gov;  // Governance token
 
     SaiVox   public  vox;  // Target price feed
     DSValue  public  pip;  // Reference price feed
@@ -103,11 +103,11 @@ contract SaiTub is DSThing, SaiTubEvents {
     //------------------------------------------------------------------
 
     function SaiTub(
-        RQToken  sai_,
+        RequestableToken  sai_,
         DSToken  sin_,
         DSToken  skr_,
         ERC20    gem_,
-        RQToken  gov_,
+        RequestableToken  gov_,
         DSValue  pip_,
         DSValue  pep_,
         SaiVox   vox_,

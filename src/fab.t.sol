@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
 import "ds-test/test.sol";
 import './fab.sol';
@@ -16,12 +16,14 @@ contract BinTest is DSTest {
     DaiFab daiFab;
 
     DSToken gem;
-    RQToken gov;
+    RequestableToken gov;
     DSValue pip;
     DSValue pep;
     address pit;
 
     DSRoles authority;
+
+    address rootchain;
 
     function setUp() public {
         gemFab = new GemFab();
@@ -34,12 +36,12 @@ contract BinTest is DSTest {
         dadFab = new DadFab();
 
         uint startGas = msg.gas;
-        daiFab = new DaiFab(gemFab, rGemFab, voxFab, tubFab, tapFab, topFab, momFab, dadFab);
+        daiFab = new DaiFab(gemFab, rGemFab, voxFab, tubFab, tapFab, topFab, momFab, dadFab, this);
         uint endGas = msg.gas;
-        log_named_uint('Deploy DaiFab', startGas - endGas);
+        emit log_named_uint('Deploy DaiFab', startGas - endGas);
 
         gem = new DSToken('GEM');
-        gov = new RQToken('GOV');
+        gov = new RequestableToken('GOV', this);
         pip = new DSValue();
         pep = new DSValue();
         pit = address(0x123);
@@ -51,32 +53,32 @@ contract BinTest is DSTest {
         uint startGas = msg.gas;
         daiFab.makeTokens();
         uint endGas = msg.gas;
-        log_named_uint('Make Tokens', startGas - endGas);
+        emit log_named_uint('Make Tokens', startGas - endGas);
 
         startGas = msg.gas;
         daiFab.makeVoxTub(gem, gov, pip, pep, pit);
         endGas = msg.gas;
-        log_named_uint('Make Vox Tub', startGas - endGas);
+        emit log_named_uint('Make Vox Tub', startGas - endGas);
 
         startGas = msg.gas;
         daiFab.makeTapTop();
         endGas = msg.gas;
-        log_named_uint('Make Tap Top', startGas - endGas);
+        emit log_named_uint('Make Tap Top', startGas - endGas);
 
         startGas = msg.gas;
         daiFab.configParams();
         endGas = msg.gas;
-        log_named_uint('Config Params', startGas - endGas);
+        emit log_named_uint('Config Params', startGas - endGas);
 
         startGas = msg.gas;
         daiFab.verifyParams();
         endGas = msg.gas;
-        log_named_uint('Verify Params', startGas - endGas);
+        emit log_named_uint('Verify Params', startGas - endGas);
 
         startGas = msg.gas;
         daiFab.configAuth(authority);
         endGas = msg.gas;
-        log_named_uint('Config Auth', startGas - endGas);
+        emit log_named_uint('Config Auth', startGas - endGas);
     }
 
     function testFailStep() public {

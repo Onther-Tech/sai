@@ -17,18 +17,18 @@ contract TubTest is DSTest, DSThing {
     DSValue pip;
     DSValue pep;
 
-    RQToken sai;
+    RequestableToken sai;
     DSToken sin;
     DSToken skr;
     DSToken gem;
-    RQToken gov;
+    RequestableToken gov;
 
     function setUp() public {
-        sai = new RQToken("SAI");
+        sai = new RequestableToken("SAI", this);
         sin = new DSToken("SIN");
         skr = new DSToken("SKR");
         gem = new DSToken("GEM");
-        gov = new RQToken("GOV");
+        gov = new RequestableToken("GOV", this);
         pip = new DSValue();
         pep = new DSValue();
         dad = new DSGuard();

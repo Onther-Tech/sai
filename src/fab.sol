@@ -17,8 +17,8 @@ contract GemFab {
 }
 
 contract RGemFab {
-    function newTok(bytes32 name) public returns (RQToken token){
-        token = new RQToken(name);
+    function newTok(bytes32 name, address rootchain_) public returns (RequestableToken token){
+        token = new RequestableToken(name, rootchain_);
         token.setOwner(msg.sender);
     }
 }
@@ -31,7 +31,7 @@ contract VoxFab {
 }
 
 contract TubFab {
-    function newTub(RQToken sai, DSToken sin, DSToken skr, ERC20 gem, RQToken gov, DSValue pip, DSValue pep, SaiVox vox, address pit) public returns (SaiTub tub) {
+    function newTub(RequestableToken sai, DSToken sin, DSToken skr, ERC20 gem, RequestableToken gov, DSValue pip, DSValue pep, SaiVox vox, address pit) public returns (SaiTub tub) {
         tub = new SaiTub(sai, sin, skr, gem, gov, pip, pep, vox, pit);
         tub.setOwner(msg.sender);
     }
@@ -75,7 +75,7 @@ contract DaiFab is DSAuth {
     MomFab public momFab;
     DadFab public dadFab;
 
-    RQToken public sai;
+    RequestableToken public sai;
     DSToken public sin;
     DSToken public skr;
 
@@ -87,9 +87,11 @@ contract DaiFab is DSAuth {
     SaiMom public mom;
     DSGuard public dad;
 
+    address rootchain;
+
     uint8 public step = 0;
 
-    function DaiFab(GemFab gemFab_, RGemFab rGemFab_, VoxFab voxFab_, TubFab tubFab_, TapFab tapFab_, TopFab topFab_, MomFab momFab_, DadFab dadFab_) public {
+    function DaiFab(GemFab gemFab_, RGemFab rGemFab_, VoxFab voxFab_, TubFab tubFab_, TapFab tapFab_, TopFab topFab_, MomFab momFab_, DadFab dadFab_, address rootchain_) public {
         gemFab = gemFab_;
         rGemFab = rGemFab_;
         voxFab = voxFab_;
@@ -98,11 +100,12 @@ contract DaiFab is DSAuth {
         topFab = topFab_;
         momFab = momFab_;
         dadFab = dadFab_;
+        rootchain = rootchain_;
     }
 
     function makeTokens() public auth {
         require(step == 0);
-        sai = rGemFab.newTok('GSTA');
+        sai = rGemFab.newTok('GSTA', rootchain);
         sin = gemFab.newTok('SIN');
         skr = gemFab.newTok('PRBG');
         sai.setName('GSTA Stablecoin v1.0');
@@ -111,7 +114,7 @@ contract DaiFab is DSAuth {
         step += 1;
     }
 
-    function makeVoxTub(ERC20 gem, RQToken gov, DSValue pip, DSValue pep, address pit) public auth {
+    function makeVoxTub(ERC20 gem, RequestableToken gov, DSValue pip, DSValue pep, address pit) public auth {
         require(step == 1);
         require(address(gem) != 0x0);
         require(address(gov) != 0x0);
