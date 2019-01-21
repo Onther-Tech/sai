@@ -22,7 +22,7 @@ pragma solidity ^0.4.18;
 import "./tub.sol";
 
 contract SaiTap is DSThing {
-    RQToken  public  sai;
+    RequestableToken  public  sai;
     DSToken  public  sin;
     DSToken  public  skr;
 

@@ -25,7 +25,7 @@ contract GemPit {
         gem.burn(gem.balanceOf(this));
     }
 
-    function rburn(RQToken gem) public {
+    function rburn(RequestableToken gem) public {
         gem.burn(gem.balanceOf(this));
     }
 }

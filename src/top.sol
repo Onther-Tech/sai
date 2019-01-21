@@ -27,7 +27,7 @@ contract SaiTop is DSThing {
     SaiTub   public  tub;
     SaiTap   public  tap;
 
-    RQToken  public  sai;
+    RequestableToken  public  sai;
     DSToken  public  sin;
     DSToken  public  skr;
     ERC20    public  gem;
