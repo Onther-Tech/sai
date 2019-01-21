@@ -28,6 +28,7 @@ TAP_FAB=$(seth receipt $TAP_FABtx contractAddress)
 TOP_FAB=$(seth receipt $TOP_FABtx contractAddress)
 MOM_FAB=$(seth receipt $MOM_FABtx contractAddress)
 DAD_FAB=$(seth receipt $DAD_FABtx contractAddress)
+ROOT_CHAIN="0x81431b69B1e0E334d4161A13C2955e0f3599381e"
 
 cat > load-fab-$(seth chain) << EOF
 #!/bin/bash
@@ -43,4 +44,5 @@ export TUB_FAB=$TUB_FAB
 export TOP_FAB=$TOP_FAB
 export MOM_FAB=$MOM_FAB
 export DAD_FAB=$DAD_FAB
+export ROOT_CHAIN=$ROOT_CHAIN
 EOF

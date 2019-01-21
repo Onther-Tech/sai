@@ -21,7 +21,7 @@ test -z $SAI_PIP && SAI_PIP=$(seth receipt $PIPtx contractAddress)
 test -z $SAI_PEP && SAI_PEP=$(seth receipt $PEPtx contractAddress)
 test -z $SAI_PIT && SAI_PIT="0x0000000000000000000000000000000000000123"
 
-DAI_FAB=$(dapp create DaiFab $GEM_FAB $RGEM_FAB $VOX_FAB $TUB_FAB $TAP_FAB $TOP_FAB $MOM_FAB $DAD_FAB)
+DAI_FAB=$(dapp create DaiFab $GEM_FAB $RGEM_FAB $VOX_FAB $TUB_FAB $TAP_FAB $TOP_FAB $MOM_FAB $DAD_FAB $ROOT_CHAIN)
 
 if [ -z $SAI_ADM ]
 then
