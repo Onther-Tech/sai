@@ -5,36 +5,44 @@ export SOLC_FLAGS=${SOLC_FLAGS:-"--optimize"}
 export ETH_GAS=${ETH_GAS:-"4500000"}
 export ETH_FROM=${ETH_FROM:-$(seth rpc eth_coinbase)}
 
-# dapp build
-
-(test -z $GEM_FAB || test -z $RGEM_FAB || test -z $VOX_FAB || test -z $TUB_FAB || test -z $TAP_FAB  || test -z $TOP_FAB || test -z $MOM_FAB || test -z $DAD_FAB) && exit 1
-
-export SETH_ASYNC=yes
-test -z $SAI_GEM && GEMtx=$(dapp create WETH9)
-test -z $SAI_GOV && GOVtx=$(dapp create WETH9)
-test -z $SAI_PIP && PIPtx=$(dapp create DSValue)
-test -z $SAI_PEP && PEPtx=$(dapp create DSValue)
-export SETH_ASYNC=no
-test -z $SAI_GEM && SAI_GEM=$(seth receipt $GEMtx contractAddress)
-test -z $SAI_GOV && SAI_GOV=$(seth receipt $GOVtx contractAddress)
-test -z $SAI_PIP && SAI_PIP=$(seth receipt $PIPtx contractAddress)
-test -z $SAI_PEP && SAI_PEP=$(seth receipt $PEPtx contractAddress)
-test -z $SAI_PIT && SAI_PIT="0x0000000000000000000000000000000000000123"
-
-DAI_FAB=$(dapp create DaiFab $GEM_FAB $RGEM_FAB $VOX_FAB $TUB_FAB $TAP_FAB $TOP_FAB $MOM_FAB $DAD_FAB $ROOT_CHAIN)
-
-if [ -z $SAI_ADM ]
+if [ -z "$1" ]
 then
-    SAI_ADM=$(dapp create DSRoles)
-    seth send $SAI_ADM 'setRootUser(address,bool)' $ETH_FROM true
-fi
+  echo "[Usage] deploy-rbg [RootChain address]" && exit 1
+else
 
-seth send $DAI_FAB 'makeTokens()'
-seth send $DAI_FAB 'makeVoxTub(address,address,address,address,address)' $SAI_GEM $SAI_GOV $SAI_PIP $SAI_PEP $SAI_PIT
-seth send $DAI_FAB 'makeTapTop()'
-seth send $DAI_FAB 'configParams()'
-seth send $DAI_FAB 'verifyParams()'
-seth send $DAI_FAB 'configAuth(address)' $SAI_ADM
+  dapp build
+
+  (test -z $GEM_FAB || test -z $RGEM_FAB || test -z $VOX_FAB || test -z $TUB_FAB || test -z $TAP_FAB  || test -z $TOP_FAB || test -z $MOM_FAB || test -z $DAD_FAB) && exit 1
+
+  export SETH_ASYNC=yes
+  test -z $SAI_GEM && GEMtx=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'ETH')))
+  test -z $SAI_GOV && GOVtx=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'GOV')) $1)
+  test -z $SAI_PIP && PIPtx=$(dapp create DSValue)
+  test -z $SAI_PEP && PEPtx=$(dapp create DSValue)
+
+  export SETH_ASYNC=no
+  test -z $SAI_GEM && SAI_GEM=$(seth receipt $GEMtx contractAddress)
+  test -z $SAI_GOV && SAI_GOV=$(seth receipt $GOVtx contractAddress)
+  test -z $SAI_PIP && SAI_PIP=$(seth receipt $PIPtx contractAddress)
+  test -z $SAI_PEP && SAI_PEP=$(seth receipt $PEPtx contractAddress)
+  test -z $SAI_PIT && SAI_PIT="0x0000000000000000000000000000000000000123"
+
+  DAI_FAB=$(dapp create DaiFab $GEM_FAB $RGEM_FAB $VOX_FAB $TUB_FAB $TAP_FAB $TOP_FAB $MOM_FAB $DAD_FAB $1)
+
+  if [ -z $SAI_ADM ]
+  then
+      SAI_ADM=$(dapp create DSRoles)
+      seth send $SAI_ADM 'setRootUser(address,bool)' $ETH_FROM true
+  fi
+
+  seth send $DAI_FAB 'makeTokens()'
+  seth send $DAI_FAB 'makeVoxTub(address,address,address,address,address)' $SAI_GEM $SAI_GOV $SAI_PIP $SAI_PEP $SAI_PIT
+  seth send $DAI_FAB 'makeTapTop()'
+  seth send $DAI_FAB 'configParams()'
+  seth send $DAI_FAB 'verifyParams()'
+  seth send $DAI_FAB 'configAuth(address)' $SAI_ADM
+
+fi
 
 cat > load-env-$(seth chain) << EOF
 #!/bin/bash
@@ -57,4 +65,5 @@ export SAI_VOX=0x$(seth call $DAI_FAB 'vox()(address)')
 export SAI_TUB=0x$(seth call $DAI_FAB 'tub()(address)')
 export SAI_TAP=0x$(seth call $DAI_FAB 'tap()(address)')
 export SAI_TOP=0x$(seth call $DAI_FAB 'top()(address)')
+export ROOT_CHAIN=$1
 EOF

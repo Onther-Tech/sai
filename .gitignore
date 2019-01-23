@@ -1,4 +1,4 @@
 /out
-load-env*
-load-fab*
+load-env-*
+load-fab-*
 .idea
