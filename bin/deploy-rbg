@@ -10,21 +10,21 @@ then
   echo "[Usage] deploy-rbg [RootChain address]" && exit 1
 else
 
-# dapp build
+dapp build
 
   (test -z $GEM_FAB || test -z $RGEM_FAB || test -z $VOX_FAB || test -z $TUB_FAB || test -z $TAP_FAB  || test -z $TOP_FAB || test -z $MOM_FAB || test -z $DAD_FAB) && exit 1
 
-  export SETH_ASYNC=yes
-  test -z $SAI_GEM && GEMtx=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'ETH')))
-  test -z $SAI_GOV && GOVtx=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'GOV')) $1)
-  test -z $SAI_PIP && PIPtx=$(dapp create DSValue)
-  test -z $SAI_PEP && PEPtx=$(dapp create DSValue)
+  # export SETH_ASYNC=yes
+  test -z $SAI_GEM && SAI_GEM=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'ETH')))
+  test -z $SAI_GOV && SAI_GOV=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'GOV')) $1)
+  test -z $SAI_PIP && SAI_PIP=$(dapp create DSValue)
+  test -z $SAI_PEP && SAI_PEP=$(dapp create DSValue)
 
-  export SETH_ASYNC=no
-  test -z $SAI_GEM && SAI_GEM=$(seth receipt $GEMtx contractAddress)
-  test -z $SAI_GOV && SAI_GOV=$(seth receipt $GOVtx contractAddress)
-  test -z $SAI_PIP && SAI_PIP=$(seth receipt $PIPtx contractAddress)
-  test -z $SAI_PEP && SAI_PEP=$(seth receipt $PEPtx contractAddress)
+  # export SETH_ASYNC=no
+  # test -z $SAI_GEM && SAI_GEM=$(seth receipt $GEMtx contractAddress)
+  # test -z $SAI_GOV && SAI_GOV=$(seth receipt $GOVtx contractAddress)
+  # test -z $SAI_PIP && SAI_PIP=$(seth receipt $PIPtx contractAddress)
+  # test -z $SAI_PEP && SAI_PEP=$(seth receipt $PEPtx contractAddress)
   test -z $SAI_PIT && SAI_PIT="0x0000000000000000000000000000000000000123"
 
   DAI_FAB=$(dapp create DaiFab $GEM_FAB $RGEM_FAB $VOX_FAB $TUB_FAB $TAP_FAB $TOP_FAB $MOM_FAB $DAD_FAB $1)
