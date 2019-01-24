@@ -10,29 +10,29 @@ then
   echo "[Usage] deploy-rbg [RootChain address]" && exit 1
 else
 
-  if [[ -z "$SKIP_BUILD_IF_ALREADY_BUILT" || ( -n "$SKIP_BUILD_IF_ALREADY_BUILT" && ! -f out/SaiTop.abi ) ]]; then dapp build; fi
+  # if [[ -z "$SKIP_BUILD_IF_ALREADY_BUILT" || ( -n "$SKIP_BUILD_IF_ALREADY_BUILT" && ! -f out/SaiTop.abi ) ]]; then dapp build; fi
 
-  export SETH_ASYNC=yes
+  # export SETH_ASYNC=yes
 
-  GEM_FABtx=$(dapp create GemFab)
-  RGEM_FABtx=$(dapp create RGemFab)
-  VOX_FABtx=$(dapp create VoxFab)
-  TUB_FABtx=$(dapp create TubFab)
-  TAP_FABtx=$(dapp create TapFab)
-  TOP_FABtx=$(dapp create TopFab)
-  MOM_FABtx=$(dapp create MomFab)
-  DAD_FABtx=$(dapp create DadFab)
+  GEM_FAB=$(dapp create GemFab)
+  RGEM_FAB=$(dapp create RGemFab)
+  VOX_FAB=$(dapp create VoxFab)
+  TUB_FAB=$(dapp create TubFab)
+  TAP_FAB=$(dapp create TapFab)
+  TOP_FAB=$(dapp create TopFab)
+  MOM_FAB=$(dapp create MomFab)
+  DAD_FAB=$(dapp create DadFab)
 
-  export SETH_ASYNC=no
-
-  GEM_FAB=$(seth receipt $GEM_FABtx contractAddress)
-  RGEM_FAB=$(seth receipt $RGEM_FABtx contractAddress)
-  VOX_FAB=$(seth receipt $VOX_FABtx contractAddress)
-  TUB_FAB=$(seth receipt $TUB_FABtx contractAddress)
-  TAP_FAB=$(seth receipt $TAP_FABtx contractAddress)
-  TOP_FAB=$(seth receipt $TOP_FABtx contractAddress)
-  MOM_FAB=$(seth receipt $MOM_FABtx contractAddress)
-  DAD_FAB=$(seth receipt $DAD_FABtx contractAddress)
+  # export SETH_ASYNC=no
+  #
+  # GEM_FAB=$(seth receipt $GEM_FABtx contractAddress)
+  # RGEM_FAB=$(seth receipt $RGEM_FABtx contractAddress)
+  # VOX_FAB=$(seth receipt $VOX_FABtx contractAddress)
+  # TUB_FAB=$(seth receipt $TUB_FABtx contractAddress)
+  # TAP_FAB=$(seth receipt $TAP_FABtx contractAddress)
+  # TOP_FAB=$(seth receipt $TOP_FABtx contractAddress)
+  # MOM_FAB=$(seth receipt $MOM_FABtx contractAddress)
+  # DAD_FAB=$(seth receipt $DAD_FABtx contractAddress)
   ROOT_CHAIN=$1
 
 fi

@@ -10,7 +10,7 @@ then
   echo "[Usage] deploy-rbg [RootChain address]" && exit 1
 else
 
-  dapp build
+# dapp build
 
   (test -z $GEM_FAB || test -z $RGEM_FAB || test -z $VOX_FAB || test -z $TUB_FAB || test -z $TAP_FAB  || test -z $TOP_FAB || test -z $MOM_FAB || test -z $DAD_FAB) && exit 1
 
