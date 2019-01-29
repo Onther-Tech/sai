@@ -3,7 +3,7 @@
 // Testing using a `DSSpell` as the `hat` in a `DSChief` for one-off
 // root calls or role changes.
 
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
 import 'ds-test/test.sol';
 
@@ -24,13 +24,8 @@ contract SpellTest is DSTest {
     DSChief c;
     DSSpell s;
     function setUp() public {
-<<<<<<< HEAD
-        gov = new RQToken("GOV", this);
+        gov = new RequestableToken("GOV", address(0));
         iou = new DSToken("IOU");
-=======
-        var gov = new RequestableToken("GOV", address(0));
-        var iou = new DSToken("IOU");
->>>>>>> 406f4fde3ee3c7527055332240e8b86a8aecbea1
         t = new Target();
         c = new DSChief(gov, iou, 1);
     }
