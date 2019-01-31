@@ -3,19 +3,19 @@ set -ex
 
 export SOLC_FLAGS=${SOLC_FLAGS:-"--optimize"}
 export ETH_GAS=${ETH_GAS:-"4500000"}
-export ETH_FROM=${ETH_FROM:-$(seth rpc eth_coinbase)}
+# export ETH_FROM=${ETH_FROM:-$(seth rpc eth_coinbase)}
 
 if [ -z "$1" ]
 then
   echo "[Usage] deploy-rbg [RootChain address]" && exit 1
 else
 
-dapp build
+# dapp build
 
   (test -z $GEM_FAB || test -z $RGEM_FAB || test -z $VOX_FAB || test -z $TUB_FAB || test -z $TAP_FAB  || test -z $TOP_FAB || test -z $MOM_FAB || test -z $DAD_FAB) && exit 1
 
   # export SETH_ASYNC=yes
-  test -z $SAI_GEM && SAI_GEM=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'RBG')))
+  test -z $SAI_GEM && SAI_GEM=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'RBG')) $1)
   test -z $SAI_GOV && SAI_GOV=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'RGT')) $1)
   test -z $SAI_PIP && SAI_PIP=$(dapp create DSValue)
   test -z $SAI_PEP && SAI_PEP=$(dapp create DSValue)
@@ -44,21 +44,27 @@ dapp build
 
 fi
 
+seth send $SAI_PIP "poke(bytes32)" 0x000000000000000000000000000000000000000000000015af1d78b58c400000
+seth send 0x$(seth call $DAI_FAB 'mom()(address)') "setCap(uint256)" $(seth --to-uint256 $(seth --to-wei 1000 eth))
+seth send $SAI_GEM "approve(address)(bool)" 0x$(seth call $DAI_FAB 'tub()(address)')
+seth send 0x$(seth call $DAI_FAB 'skr()(address)') "approve(address)(bool)" 0x$(seth call $DAI_FAB 'tub()(address)')
+seth send 0x$(seth call $DAI_FAB 'sai()(address)') "approve(address)(bool)" 0x$(seth call $DAI_FAB 'tub()(address)')
+
 cat > load-env-$(seth chain) << EOF
 #!/bin/bash
 
 # sai deployment on $(seth chain) from $(git rev-parse HEAD)
 # $(date)
 
-export SAI_GEM=$SAI_GEM
+export PLS_RBG=$SAI_GEM
 export SAI_GOV=$SAI_GOV
 export SAI_PIP=$SAI_PIP
 export SAI_PEP=$SAI_PEP
 export SAI_PIT=$SAI_PIT
 export SAI_ADM=$SAI_ADM
-export SAI_SAI=0x$(seth call $DAI_FAB 'sai()(address)')
+export PLS_GSTAR=0x$(seth call $DAI_FAB 'sai()(address)')
 export SAI_SIN=0x$(seth call $DAI_FAB 'sin()(address)')
-export SAI_SKR=0x$(seth call $DAI_FAB 'skr()(address)')
+export PLS_PRBG=0x$(seth call $DAI_FAB 'skr()(address)')
 export SAI_DAD=0x$(seth call $DAI_FAB 'dad()(address)')
 export SAI_MOM=0x$(seth call $DAI_FAB 'mom()(address)')
 export SAI_VOX=0x$(seth call $DAI_FAB 'vox()(address)')

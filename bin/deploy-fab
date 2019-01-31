@@ -2,12 +2,8 @@
 set -ex
 
 export SOLC_FLAGS=${SOLC_FLAGS:-"--optimize"}
-export ETH_GAS=${ETH_GAS:-"4700000"}
-export ETH_RPC_URL=http://127.0.0.1:8545
-export ETH_RPC_ACCOUNTS=yes
-
-export ETH_FROM=${ETH_FROM:-$(seth rpc eth_coinbase)}
-
+export ETH_GAS=${ETH_GAS:-"3500000"}
+# export ETH_FROM=${ETH_FROM:-$(seth rpc eth_coinbase)}
 
 if [ -z "$1" ]
 then
