@@ -3,14 +3,6 @@ set -ex
 
 export SOLC_FLAGS=${SOLC_FLAGS:-"--optimize"}
 export ETH_GAS=${ETH_GAS:-"4500000"}
-<<<<<<< HEAD
-# export ETH_FROM=${ETH_FROM:-$(seth rpc eth_coinbase)}
-
-if [ -z "$1" ]
-then
-  echo "[Usage] deploy-rbg [RootChain address]" && exit 1
-else
-=======
 export ETH_RPC_URL=http://127.0.0.1:8547
 export ETH_RPC_ACCOUNTS=yes
 export ETH_FROM=$(seth rpc eth_coinbase)
@@ -42,7 +34,6 @@ export ROOTCHAIN=`curl -X POST --data '{"jsonrpc":"2.0","method":"eth_rootChain"
   TOP_FAB=$(seth receipt $TOP_FABtx contractAddress)
   MOM_FAB=$(seth receipt $MOM_FABtx contractAddress)
   DAD_FAB=$(seth receipt $DAD_FABtx contractAddress)
->>>>>>> 9ce6408... Modified get rootchain address from plasma-evm rpc
 
 cat > load-fab-$(seth chain) << EOF
 #!/bin/bash
