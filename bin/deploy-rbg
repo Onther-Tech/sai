@@ -3,35 +3,76 @@ set -ex
 
 export SOLC_FLAGS=${SOLC_FLAGS:-"--optimize"}
 export ETH_GAS=${ETH_GAS:-"4500000"}
-# export ETH_FROM=${ETH_FROM:-$(seth rpc eth_coinbase)}
+export ETH_RPC_URL=http://127.0.0.1:8547
+export ETH_RPC_ACCOUNTS=yes
+export ETH_FROM=$(seth rpc eth_coinbase)
 
-if [ -z "$1" ]
-then
-  echo "[Usage] deploy-rbg [RootChain address]" && exit 1
-else
+# Get Rootchain Address from plasma-evm chain.
+export ROOTCHAIN=`curl -X POST --data '{"jsonrpc":"2.0","method":"eth_rootChain","params":[],"id":67}' -H "Content-Type: application/json" -H "Content-Type: application/json" $ETH_RPC_URL --silent |  sed -n 's/.*\(0x.*\)\".*/\1/p'`
 
-# dapp build
+# fab build
+
+#  if [[ -z "$SKIP_BUILD_IF_ALREADY_BUILT" || ( -n "$SKIP_BUILD_IF_ALREADY_BUILT" && ! -f out/SaiTop.abi ) ]]; then dapp build; fi
+
+  export SETH_ASYNC=yes
+
+  GEM_FABtx=$(dapp create GemFab)
+  RGEM_FABtx=$(dapp create RGemFab)
+  VOX_FABtx=$(dapp create VoxFab)
+  TUB_FABtx=$(dapp create TubFab)
+  TAP_FABtx=$(dapp create TapFab)
+  TOP_FABtx=$(dapp create TopFab)
+  MOM_FABtx=$(dapp create MomFab)
+  DAD_FABtx=$(dapp create DadFab)
+
+  export SETH_ASYNC=no
+  GEM_FAB=$(seth receipt $GEM_FABtx contractAddress)
+  RGEM_FAB=$(seth receipt $RGEM_FABtx contractAddress)
+  VOX_FAB=$(seth receipt $VOX_FABtx contractAddress)
+  TUB_FAB=$(seth receipt $TUB_FABtx contractAddress)
+  TAP_FAB=$(seth receipt $TAP_FABtx contractAddress)
+  TOP_FAB=$(seth receipt $TOP_FABtx contractAddress)
+  MOM_FAB=$(seth receipt $MOM_FABtx contractAddress)
+  DAD_FAB=$(seth receipt $DAD_FABtx contractAddress)
+
+cat > load-fab-$(seth chain) << EOF
+#!/bin/bash
+
+# fab deployment on $(seth chain) from $(git rev-parse HEAD)
+# $(date)
+
+export GEM_FAB=$GEM_FAB
+export RGEM_FAB=$RGEM_FAB
+export VOX_FAB=$VOX_FAB
+export TAP_FAB=$TAP_FAB
+export TUB_FAB=$TUB_FAB
+export TOP_FAB=$TOP_FAB
+export MOM_FAB=$MOM_FAB
+export DAD_FAB=$DAD_FAB
+export ROOTCHAIN=$ROOTCHAIN
+EOF
 
   (test -z $GEM_FAB || test -z $RGEM_FAB || test -z $VOX_FAB || test -z $TUB_FAB || test -z $TAP_FAB  || test -z $TOP_FAB || test -z $MOM_FAB || test -z $DAD_FAB) && exit 1
 
   # export SETH_ASYNC=yes
-  test -z $SAI_GEM && SAI_GEM=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'RBG')) $1)
-  test -z $SAI_GOV && SAI_GOV=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'RGT')) $1)
+  test -z $SAI_GEM && SAI_GEM=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'RBG')) $ROOTCHAIN)
+  test -z $SAI_GOV && SAI_GOV=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'RGT')) $ROOTCHAIN)
   test -z $SAI_PIP && SAI_PIP=$(dapp create DSValue)
   test -z $SAI_PEP && SAI_PEP=$(dapp create DSValue)
 
   # export SETH_ASYNC=no
-  # test -z $SAI_GEM && SAI_GEM=$(seth receipt $GEMtx contractAddress)
-  # test -z $SAI_GOV && SAI_GOV=$(seth receipt $GOVtx contractAddress)
-  # test -z $SAI_PIP && SAI_PIP=$(seth receipt $PIPtx contractAddress)
-  # test -z $SAI_PEP && SAI_PEP=$(seth receipt $PEPtx contractAddress)
+  test -z $SAI_GEM && SAI_GEM=$(seth receipt $GEMtx contractAddress)
+  test -z $SAI_GOV && SAI_GOV=$(seth receipt $GOVtx contractAddress)
+  test -z $SAI_PIP && SAI_PIP=$(seth receipt $PIPtx contractAddress)
+  test -z $SAI_PEP && SAI_PEP=$(seth receipt $PEPtx contractAddress)
   test -z $SAI_PIT && SAI_PIT="0x0000000000000000000000000000000000000123"
 
-  DAI_FAB=$(dapp create DaiFab $GEM_FAB $RGEM_FAB $VOX_FAB $TUB_FAB $TAP_FAB $TOP_FAB $MOM_FAB $DAD_FAB $1)
+  DAI_FAB=$(dapp create DaiFab $GEM_FAB $RGEM_FAB $VOX_FAB $TUB_FAB $TAP_FAB $TOP_FAB $MOM_FAB $DAD_FAB $ROOTCHAIN)
 
   if [ -z $SAI_ADM ]
   then
-      SAI_ADM=$(dapp create DSRoles)
+      SAI_ADMtx=$(dapp create DSRoles)
+      SAI_ADM=$(seth receipt $SAI_ADMtx contractAddress)
       seth send $SAI_ADM 'setRootUser(address,bool)' $ETH_FROM true
   fi
 
@@ -41,8 +82,6 @@ else
   seth send $DAI_FAB 'configParams()'
   seth send $DAI_FAB 'verifyParams()'
   seth send $DAI_FAB 'configAuth(address)' $SAI_ADM
-
-fi
 
 seth send $SAI_PIP "poke(bytes32)" 0x000000000000000000000000000000000000000000000015af1d78b58c400000
 seth send 0x$(seth call $DAI_FAB 'mom()(address)') "setCap(uint256)" $(seth --to-uint256 $(seth --to-wei 1000 eth))
@@ -71,5 +110,5 @@ export SAI_VOX=0x$(seth call $DAI_FAB 'vox()(address)')
 export SAI_TUB=0x$(seth call $DAI_FAB 'tub()(address)')
 export SAI_TAP=0x$(seth call $DAI_FAB 'tap()(address)')
 export SAI_TOP=0x$(seth call $DAI_FAB 'top()(address)')
-export ROOT_CHAIN=$1
+export ROOTCHAIN=$ROOTCHAIN
 EOF
