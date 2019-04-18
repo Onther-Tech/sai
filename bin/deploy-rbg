@@ -55,8 +55,8 @@ EOF
   (test -z $GEM_FAB || test -z $RGEM_FAB || test -z $VOX_FAB || test -z $TUB_FAB || test -z $TAP_FAB  || test -z $TOP_FAB || test -z $MOM_FAB || test -z $DAD_FAB) && exit 1
 
   # export SETH_ASYNC=yes
-  test -z $SAI_GEM && SAI_GEM=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'RBG')) $ROOTCHAIN)
-  test -z $SAI_GOV && SAI_GOV=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'RGT')) $ROOTCHAIN)
+  test -z $SAI_GEM && SAI_GEM=$2
+  test -z $SAI_GOV && SAI_GOV=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'RGT')) $1)
   test -z $SAI_PIP && SAI_PIP=$(dapp create DSValue)
   test -z $SAI_PEP && SAI_PEP=$(dapp create DSValue)
 
@@ -85,7 +85,7 @@ EOF
 
 seth send $SAI_PIP "poke(bytes32)" 0x000000000000000000000000000000000000000000000015af1d78b58c400000
 seth send 0x$(seth call $DAI_FAB 'mom()(address)') "setCap(uint256)" $(seth --to-uint256 $(seth --to-wei 1000 eth))
-seth send $SAI_GEM "approve(address)(bool)" 0x$(seth call $DAI_FAB 'tub()(address)')
+seth send $SAI_GEM "approve(address,uint)(bool)" 0x$(seth call $DAI_FAB 'tub()(address)') 0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
 seth send 0x$(seth call $DAI_FAB 'skr()(address)') "approve(address)(bool)" 0x$(seth call $DAI_FAB 'tub()(address)')
 seth send 0x$(seth call $DAI_FAB 'sai()(address)') "approve(address)(bool)" 0x$(seth call $DAI_FAB 'tub()(address)')
 
