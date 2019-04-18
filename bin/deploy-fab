@@ -7,7 +7,7 @@ export ETH_GAS=${ETH_GAS:-"3500000"}
 
 if [ -z "$1" ]
 then
-  echo "[Usage] deploy-rbg [RootChain address]" && exit 1
+  echo "[Usage] deploy-fab [RootChain address]" && exit 1
 else
 
 # if [[ -z "$SKIP_BUILD_IF_ALREADY_BUILT" || ( -n "$SKIP_BUILD_IF_ALREADY_BUILT" && ! -f out/SaiTop.abi ) ]]; then dapp build; fi
