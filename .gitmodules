@@ -29,3 +29,6 @@
 [submodule "lib/requestable-erc20-wrapper-ds-token"]
 	path = lib/requestable-erc20-wrapper-ds-token
 	url = https://github.com/Onther-Tech/requestable-erc20-wrapper-ds-token
+[submodule "lib/token"]
+	path = lib/token
+	url = https://github.com/jake-song/token
