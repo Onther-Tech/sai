@@ -3,6 +3,7 @@ pragma solidity ^0.4.18;
 import "ds-auth/auth.sol";
 import 'ds-token/token.sol';
 import "requestable-ds-token/RequestableToken.sol";
+import "requestable-ds-token/RequestableWrapperToken.sol";
 import 'ds-guard/guard.sol';
 import 'ds-roles/roles.sol';
 import 'ds-value/value.sol';
