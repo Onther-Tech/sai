@@ -15,7 +15,8 @@ dapp build
   (test -z $GEM_FAB || test -z $RGEM_FAB || test -z $VOX_FAB || test -z $TUB_FAB || test -z $TAP_FAB  || test -z $TOP_FAB || test -z $MOM_FAB || test -z $DAD_FAB) && exit 1
 
   # export SETH_ASYNC=yes
-  test -z $SAI_GEM && SAI_GEM=$(dapp create RequestableERC20WrapperDSToken false $(seth --to-bytes32 $(seth --from-ascii 'TST')) "0x0000000000000000000000000000000000000123")
+  TOKEN=$(dapp create DSToken $(seth --to-bytes32 $(seth --from-ascii 'TST')))
+  test -z $SAI_GEM && SAI_GEM=$(dapp create RequestableWrapperToken false $(seth --to-bytes32 $(seth --from-ascii 'TST')) $TOKEN)
   test -z $SAI_GOV && SAI_GOV=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'RGT')) $1)
   test -z $SAI_PIP && SAI_PIP=$(dapp create DSValue)
   test -z $SAI_PEP && SAI_PEP=$(dapp create DSValue)
