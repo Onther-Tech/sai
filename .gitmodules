@@ -26,3 +26,6 @@
 	path = lib/ds-spell
 	url = https://github.com/dapphub/ds-spell
 
+[submodule "lib/requestable-wrapper-token"]
+	path = lib/requestable-wrapper-token
+	url = https://github.com/Onther-Tech/requestable-wrapper-token
