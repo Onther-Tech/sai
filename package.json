@@ -1,0 +1,27 @@
+{
+  "name": "sai",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.4",
+    "web3": "^0.20.6"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Onther-Tech/sai.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Onther-Tech/sai/issues"
+  },
+  "homepage": "https://github.com/Onther-Tech/sai#readme"
+}
