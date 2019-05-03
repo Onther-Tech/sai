@@ -15,17 +15,17 @@ const wrapperABI = JSON.parse(fs.readFileSync(wrapperABIFile).toString());
 const plsWrapper = web3.eth.contract(wrapperABI).at("0xe91b085dde42ec2a702a0bbd430ba8afbfadf103");
 
 // tub contract
-const TubABIFile = path.join(__dirname, '..', 'out', 'SaiTub.abi');
+const TubABIFile = path.join(__dirname, '..', 'build', 'SaiTub.abi');
 const TubABI = JSON.parse(fs.readFileSync(TubABIFile).toString());
 const tub = web3.eth.contract(TubABI).at("0x230aa5d5550a10d90f165305f455fd404f904b3c");
 
-// GSTA 
-const GSTAABIFile = path.join(__dirname, '..', 'out', 'RequestableToken.abi');
+// GSTA
+const GSTAABIFile = path.join(__dirname, '..', 'build', 'RequestableToken.abi');
 const GSTAABI = JSON.parse(fs.readFileSync(GSTAABIFile).toString());
 const gsta = web3.eth.contract(GSTAABI).at("0x25b0aae16b929da9b72f56e271344cb1734ebda5");
 
 // helper function
-const { 
+const {
     padLeft,
     waitTx,
  } = require('./helper');
@@ -53,13 +53,8 @@ const {
         await waitTx(web3, txHash);
         const bal = await gsta.balanceOf(user);
         console.log(bal);
-        
+
     } catch (error) {
         console.log(error)
     }
 })();
-
-
-
-
-
