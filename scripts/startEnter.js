@@ -24,7 +24,7 @@ const wrapperABI = JSON.parse(fs.readFileSync(wrapperABIFile).toString());
 const rootWrapper = web3.eth.contract(wrapperABI).at("0x1d93d7bd7d820ac7691109ace371e42d5004e1c1");
 
 // wrapper contract in plasma chain
-const plsWrapperAddr = '0xbcbe8c344294bba0b1445c92c211a876b154976a';
+const plsWrapperAddr = '0xe91b085dde42ec2a702a0bbd430ba8afbfadf103';
 
 // helper function
 const { 
