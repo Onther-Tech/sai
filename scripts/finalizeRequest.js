@@ -57,10 +57,10 @@ const {
           for(let i = 0; i < needBlock; i++){
             return await finalizeBLK();
           }
+        } else {
+          txHash = await root.finalizeRequest({from: user, gas: 300000});
+          await waitTx(web3, txHash);
         }
-
-        txHash = await root.finalizeRequest({from: user, gas: 600000});
-        await waitTx(web3, txHash);
 
     } catch (error) {
         console.log(error)
