@@ -1,9 +1,9 @@
 // load web3
 const Web3 = require('web3');
-const httpProviderUrl = "http://localhost:8545"; // Rootchain RPC endpoint
+const httpProviderUrl = "http://172.30.0.3:8545"; // Rootchain RPC endpoint
 const web3 = new Web3(new Web3.providers.HttpProvider(httpProviderUrl));
-const operator = web3.eth.accounts[0] // "0x71562b71999873DB5b286dF957af199Ec94617F7"
-const user = web3.eth.accounts[1];
+const operator = "0x3616be06d68dd22886505e9c2caaa9eca84564b8" // "0x71562b71999873DB5b286dF957af199Ec94617F7"
+const user = "0x5df7107c960320b90a3d7ed9a83203d1f98a811d";
 
 // RootChain instace
 const fs = require('fs');
@@ -11,12 +11,12 @@ const path = require('path');
 // 기준 경로는 plasma-evm-contracts/scripts 에 작성된 파일.
 const rootchainJSON = path.join(__dirname, '..', 'build', 'RootChain.json');
 const rootchainABI = JSON.parse(fs.readFileSync(rootchainJSON).toString()).abi;
-const root = web3.eth.contract(rootchainABI).at("0x880ec53af800b5cd051531672ef4fc4de233bd5d");
+const root = web3.eth.contract(rootchainABI).at("0xf7A0b0C49cB054fe3753a1D287D060d7C79fBD05");
 
 // Mintable Token
 const tokenABIFile = path.join(__dirname, '..', 'build', 'MintableToken.json');
 const tokenABI = JSON.parse(fs.readFileSync(tokenABIFile).toString()).abi;
-const token = web3.eth.contract(tokenABI).at("0x3A220f351252089D385b29beca14e27F204c296A");
+const token = web3.eth.contract(tokenABI).at("0xA2Dc56b5844E3401Ef76426E333D3082Ad8a07e2");
 
 // wrapper contract
 const wrapperABIFile = path.join(__dirname, '..', 'build', 'RequestableWrapperToken.abi');
