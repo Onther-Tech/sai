@@ -29,7 +29,7 @@ const plsWrapperAddr = '0xbcbe8c344294bba0b1445c92c211a876b154976a';
 const REVERT = '0x0';
 
 // helper function
-const { 
+const {
   waitTx,
 } = require('./helper');
 
@@ -48,19 +48,21 @@ const {
         console.log(lastFinalizedBlock)
         console.log(lastBlock)
         console.log(lastBlock - lastFinalizedBlock)
-        
-        txHash = await root.finalizeBlock({from: user, gas: 100000});
+        let needBlock = lastBlock - lastFinalizedBlock;
+        async function finalizeBLK(){
+          txHash = await root.finalizeBlock({from: user, gas: 100000});
+          await waitTx(web3, txHash);
+        }
+        if (needBlock > 0){
+          for(let i = 0; i < needBlock; i++){
+            return await finalizeBLK();
+          }
+        }
+
+        txHash = await root.finalizeRequest({from: user, gas: 600000});
         await waitTx(web3, txHash);
-                                      
-        txHash = await root.finalizeRequest({from: user});
-        await waitTx(web3, txHash);
-        
+
     } catch (error) {
         console.log(error)
     }
 })();
-
-
-
-
-
