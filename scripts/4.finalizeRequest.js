@@ -56,7 +56,7 @@ const {
         }
         if (needBlock > 0){
           for(let i = 0; i < needBlock; i++){
-            return await finalizeBLK();
+            await finalizeBLK();
           }
         }
 
