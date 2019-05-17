@@ -1,8 +1,8 @@
 // load web3
 const Web3 = require('web3');
-const httpProviderUrl = "http://172.30.0.3:8545"; // Rootchain RPC endpoint
+const httpProviderUrl = "http://127.0.0.1:8545"; // Rootchain RPC endpoint
 const web3 = new Web3(new Web3.providers.HttpProvider(httpProviderUrl));
-const operator = web3.eth.accounts[0] // 
+const operator = web3.eth.accounts[0] //
 const user = web3.eth.accounts[1];
 
 // RootChain instace
@@ -27,7 +27,7 @@ const rootWrapper = web3.eth.contract(wrapperABI).at("0x1d93d7bd7d820ac7691109ac
 const plsWrapperAddr = '0xe91b085dde42ec2a702a0bbd430ba8afbfadf103';
 
 // helper function
-const { 
+const {
     padLeft,
     waitTx,
  } = require('./helper');
@@ -48,13 +48,8 @@ const {
         console.log("User's TrieValue : ", trieValue);
         txHash = await root.startExit(rootWrapper.address, trieKey, trieValue, {from: user, gas: 2000000, value: web3.toWei('0.001', 'ether')});
         await waitTx(web3, txHash);
-        
+
     } catch (error) {
         console.log(error)
     }
 })();
-
-
-
-
-

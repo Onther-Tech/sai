@@ -10,7 +10,7 @@ then
   echo "[Usage] deploy-rbg [RootChain address]" && exit 1
 else
 
-dapp --use solc:0.4.24 build 
+dapp --use solc:0.4.24 build
 
   (test -z $GEM_FAB || test -z $RGEM_FAB || test -z $VOX_FAB || test -z $TUB_FAB || test -z $TAP_FAB  || test -z $TOP_FAB || test -z $MOM_FAB || test -z $DAD_FAB) && exit 1
 
@@ -50,6 +50,8 @@ seth send 0x$(seth call $DAI_FAB 'mom()(address)') "setCap(uint256)" 0x$(seth --
 seth send $SAI_GEM "approve(address)(bool)" 0x$(seth call $DAI_FAB 'tub()(address)')
 seth send 0x$(seth call $DAI_FAB 'skr()(address)') "approve(address)(bool)" 0x$(seth call $DAI_FAB 'tub()(address)')
 seth send 0x$(seth call $DAI_FAB 'sai()(address)') "approve(address)(bool)" 0x$(seth call $DAI_FAB 'tub()(address)')
+seth send 0x$(seth call $DAI_FAB 'skr()(address)') "approve(address)(bool)" 0x$(seth call $DAI_FAB 'tap()(address)')
+seth send 0x$(seth call $DAI_FAB 'sai()(address)') "approve(address)(bool)" 0x$(seth call $DAI_FAB 'tap()(address)')
 
 cat > load-env-$(seth chain) << EOF
 #!/bin/bash

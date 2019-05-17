@@ -5,7 +5,7 @@ function marshalString (str) {
     if (str.slice(0, 2) === '0x') return str;
     return '0x'.concat(str);
   }
-  
+
 function unmarshalString (str) {
     if (str.slice(0, 2) === '0x') return str.slice(2);
     return str;
@@ -18,13 +18,13 @@ async function padLeft (web3, str, padLength = DEFAULT_PAD_LENGTH) {
 
 async function waitTx (web3, hash) {
     let receipt;
-    
+
     while (true) {
       receipt = await web3.eth.getTransactionReceiptAsync(hash);
       if (receipt) break;
       await wait(1);
     }
-  
+
     if (receipt.status === REVERT) {
       console.error(`transaction(${hash}) is reverted`);
       return false;

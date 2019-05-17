@@ -1,11 +1,10 @@
 // load web3
 const Web3 = require('web3');
-const httpProviderUrl = "http://172.30.0.4:8547"; // plasma chain RPC endpoint
+const httpProviderUrl = "http://127.0.0.1:8547"; // plasma chain RPC endpoint
 const web3 = new Web3(new Web3.providers.HttpProvider(httpProviderUrl));
-const operator = web3.eth.accounts[0] 
+const operator = web3.eth.accounts[0]
 const user = web3.eth.accounts[1];
 
-// RootChain instace
 const fs = require('fs');
 const path = require('path');
 
@@ -24,6 +23,11 @@ const GSTAABIFile = path.join(__dirname, '..', 'build', 'RequestableToken.abi');
 const GSTAABI = JSON.parse(fs.readFileSync(GSTAABIFile).toString());
 const gsta = web3.eth.contract(GSTAABI).at("0x25b0aae16b929da9b72f56e271344cb1734ebda5");
 
+// pip contract
+const PipABIFile = path.join(__dirname, '..', 'build', 'DSValue.abi');
+const PipABI = JSON.parse(fs.readFileSync(PipABIFile).toString());
+const pip = web3.eth.contract(PipABI).at("0x2747fbbab18edf8d0cec77e9ccba14708b87a46b");
+
 // helper function
 const {
     padLeft,
@@ -41,19 +45,23 @@ const {
 
     try {
         txHash = await tub.open({from: user});
-        console.log(txHash)
         await waitTx(web3, txHash);
-        const receipt = await web3.eth.getTransactionReceipt(txHash);
-        const cdpNumber = receipt.logs[1].data;
-        txHash = await tub.join(1e19, {from: user, gas: 2000000});
+        // const receipt = await web3.eth.getTransactionReceipt(txHash);
+        // const cdpNumber = receipt.logs[1].data;
+
+        const cdpNumber = await padLeft(web3, web3.fromDecimal(1));
+        txHash = await tub.join(1e18, {from: user, gas: 2000000});
         await waitTx(web3, txHash);
-	    console.log("Join 1e19 RBG : ", txHash);
-        txHash = await tub.lock(cdpNumber, 1e19, {from: user, gas: 2000000});
+	      console.log("Join 1e18 RBG : ", txHash);
+
+        txHash = await tub.lock(cdpNumber, 1e18, {from: user, gas: 2000000});
         await waitTx(web3, txHash);
-	    console.log("Lock 1e19 PRBG : ", txHash);
-        txHash = await tub.draw(cdpNumber, 1e19, {from: user, gas: 2000000});
+	      console.log("Lock 1e18 PRBG : ", txHash);
+
+        txHash = await tub.draw(cdpNumber, 266.6e18, {from: user, gas: 2000000});
         await waitTx(web3, txHash);
-	    console.log("Draw 1e19 GSTA :", txHash);
+	      console.log("Draw 266.6e18(limit) GSTA :", txHash);
+        
         const bal = await gsta.balanceOf(user);
         console.log("USER's GSTA balance : ", bal);
 
