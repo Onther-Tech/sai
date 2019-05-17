@@ -1,8 +1,8 @@
 // load web3
 const Web3 = require('web3');
-const httpProviderUrl = "http://172.30.0.3:8545"; // Rootchain RPC endpoint
+const httpProviderUrl = "http://127.0.0.1:8545"; // Rootchain RPC endpoint
 const web3 = new Web3(new Web3.providers.HttpProvider(httpProviderUrl));
-const operator = web3.eth.accounts[0] 
+const operator = web3.eth.accounts[0]
 const user = web3.eth.accounts[1];
 
 // RootChain instance
@@ -29,7 +29,7 @@ const plsWrapperAddr = '0xe91b085dde42ec2a702a0bbd430ba8afbfadf103';
 const REVERT = '0x0';
 
 // helper function
-const { 
+const {
   waitTx,
 } = require('./helper');
 
@@ -42,7 +42,7 @@ const {
     Promise.promisifyAll(rootWrapper, { suffix: 'Async' });
     Promise.promisifyAll(root, { suffix: 'Async' });
     let txHash;
-  
+
     try {
         const lastFinalizedBlock = await root.getLastFinalizedBlock(0);
         const lastBlock = await root.lastBlock(0);

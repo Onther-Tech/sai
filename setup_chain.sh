@@ -9,7 +9,7 @@ else
   export ETH_GAS=${ETH_GAS:-"4700000"}
   export SETH_STATUS=yes
   export ETH_RPC_ACCOUNTS=yes # Don't use ethsign
-  export ETH_RPC_URL=http://172.30.0.4:8547
+  export ETH_RPC_URL=http://127.0.0.1:8547
   export USER=$4
   export OPER=$3
   export ROOT_CHAIN=$1
@@ -24,17 +24,17 @@ else
   source load-env-unknown
 
   ###################################################
-  ## Deploying Rootchain contract 
+  ## Deploying Rootchain contract
   ##
   echo "Change endpoint to rootchain"
-  export ETH_RPC_URL=http://172.30.0.3:8545
+  export ETH_RPC_URL=http://127.0.0.1:8545
   echo "Change ETH_FROM to Operator"
   export ETH_FROM=$OPER
   echo "Deploy GSTA token at rootchain"
   ROOT_GSTA=$(dapp create RequestableToken $(seth --to-bytes32 $(seth --from-ascii 'GSTA')) $ROOT_CHAIN)
   echo "Token Mapping GSTA(root) - GSTA(child)"
   #seth send $ROOT_CHAIN "mapRequestableContractByOperator(address,address)" $ROOT_GSTA $PLS_GSTAR
-  
+
   ################################################
   ## RootChain Wrapper Token Operating parts
   ##
