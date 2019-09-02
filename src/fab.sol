@@ -106,10 +106,10 @@ contract DaiFab is DSAuth {
 
     function makeTokens() public auth {
         require(step == 0);
-        sai = rGemFab.newTok('GSTA', rootchain);
+        sai = rGemFab.newTok('GST', rootchain);
         sin = gemFab.newTok('SIN');
         skr = gemFab.newTok('PRBG');
-        sai.setName('GSTA Stablecoin v1.0');
+        sai.setName('GST Stablecoin v1.0');
         sin.setName('SIN');
         skr.setName('Pooled RBG');
         step += 1;
@@ -155,8 +155,8 @@ contract DaiFab is DSAuth {
 
         tub.mold("cap", 0);
         tub.mold("mat", ray(1.5  ether));
-        tub.mold("axe", ray(1.13 ether));
-        tub.mold("fee", 1000000000158153903837946257);  // 0.5% / year
+        tub.mold("axe", ray(1.05 ether));
+        tub.mold("fee", 1000000000632615615351785100);  // 2% / year
         tub.mold("tax", ray(1 ether));
         tub.mold("gap", 1 ether);
 
@@ -170,8 +170,8 @@ contract DaiFab is DSAuth {
 
         require(tub.cap() == 0);
         require(tub.mat() == 1500000000000000000000000000);
-        require(tub.axe() == 1130000000000000000000000000);
-        require(tub.fee() == 1000000000158153903837946257);
+        require(tub.axe() == 1050000000000000000000000000);
+        require(tub.fee() == 1000000000632615615351785100);
         require(tub.tax() == 1000000000000000000000000000);
         require(tub.gap() == 1000000000000000000);
 
