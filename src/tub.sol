@@ -22,23 +22,21 @@ pragma solidity ^0.4.18;
 import "ds-thing/thing.sol";
 import "ds-token/token.sol";
 import "ds-value/value.sol";
-import "requestable-ds-token/RequestableToken.sol";
 
 import "./vox.sol";
-
 
 contract SaiTubEvents {
     event LogNewCup(address indexed lad, bytes32 cup);
 }
 
 contract SaiTub is DSThing, SaiTubEvents {
-    RequestableToken  public  sai;  // Stablecoin
+    DSToken  public  sai;  // Stablecoin
     DSToken  public  sin;  // Debt (negative sai)
 
     DSToken  public  skr;  // Abstracted collateral
     ERC20    public  gem;  // Underlying collateral
 
-    RequestableToken  public  gov;  // Governance token
+    DSToken  public  gov;  // Governance token
 
     SaiVox   public  vox;  // Target price feed
     DSValue  public  pip;  // Reference price feed
@@ -103,11 +101,11 @@ contract SaiTub is DSThing, SaiTubEvents {
     //------------------------------------------------------------------
 
     function SaiTub(
-        RequestableToken  sai_,
+        DSToken  sai_,
         DSToken  sin_,
         DSToken  skr_,
         ERC20    gem_,
-        RequestableToken  gov_,
+        DSToken  gov_,
         DSValue  pip_,
         DSValue  pep_,
         SaiVox   vox_,
@@ -177,26 +175,22 @@ contract SaiTub is DSThing, SaiTubEvents {
 
     // Wrapper ratio (gem per skr)
     function per() public view returns (uint ray) {
-        return skr.totalSupply() == 0 ? RAY : rdiv(pie(), skr.totalSupply()); // skr.totalsupply가 0이면 RAY를 return, false면 1을 리턴
+        return skr.totalSupply() == 0 ? RAY : rdiv(pie(), skr.totalSupply());
     }
-
     // Join price (gem per skr)
     function ask(uint wad) public view returns (uint) {
         return rmul(wad, wmul(per(), gap));
     }
-
     // Exit price (gem per skr)
     function bid(uint wad) public view returns (uint) {
         return rmul(wad, wmul(per(), sub(2 * WAD, gap)));
     }
-
     function join(uint wad) public note {
         require(!off);
         require(ask(wad) > 0);
         require(gem.transferFrom(msg.sender, this, ask(wad)));
         skr.mint(msg.sender, wad);
     }
-
     function exit(uint wad) public note {
         require(!off || out);
         require(gem.transfer(msg.sender, bid(wad)));
@@ -259,9 +253,8 @@ contract SaiTub is DSThing, SaiTubEvents {
         cupi = add(cupi, 1);
         cup = bytes32(cupi);
         cups[cup].lad = msg.sender;
-        emit LogNewCup(msg.sender, cup);
+        LogNewCup(msg.sender, cup);
     }
-
     function give(bytes32 cup, address guy) public note {
         require(msg.sender == cups[cup].lad);
         require(guy != 0);
@@ -274,7 +267,6 @@ contract SaiTub is DSThing, SaiTubEvents {
         skr.pull(msg.sender, wad);
         require(cups[cup].ink == 0 || cups[cup].ink > 0.005 ether);
     }
-
     function free(bytes32 cup, uint wad) public note {
         require(msg.sender == cups[cup].lad);
         cups[cup].ink = sub(cups[cup].ink, wad);
@@ -297,7 +289,6 @@ contract SaiTub is DSThing, SaiTubEvents {
         require(safe(cup));
         require(sai.totalSupply() <= cap);
     }
-
     function wipe(bytes32 cup, uint wad) public note {
         require(!off);
 

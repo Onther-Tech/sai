@@ -3,14 +3,13 @@
 // Testing using a `DSSpell` as the `hat` in a `DSChief` for one-off
 // root calls or role changes.
 
-pragma solidity ^0.4.24;
+pragma solidity ^0.4.18;
 
 import 'ds-test/test.sol';
 
 import 'ds-spell/spell.sol';
 import 'ds-chief/chief.sol';
 import 'ds-token/token.sol';
-import 'requestable-ds-token/RequestableToken.sol';
 
 contract Target is DSThing {
     bool public ouch;
@@ -24,7 +23,7 @@ contract SpellTest is DSTest {
     DSChief c;
     DSSpell s;
     function setUp() public {
-        var gov = new RequestableToken("GOV", address(0));
+        var gov = new DSToken("GOV");
         var iou = new DSToken("IOU");
         t = new Target();
         c = new DSChief(gov, iou, 1);

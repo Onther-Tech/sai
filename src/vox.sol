@@ -29,7 +29,7 @@ contract SaiVox is DSThing {
     uint256  public  how;
     uint256  public  tau;
 
-    constructor (uint par_) public {
+    function SaiVox(uint par_) public {
         _par = fix = par_;
         _way = RAY;
         tau  = era();

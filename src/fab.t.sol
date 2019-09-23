@@ -1,11 +1,10 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.4.18;
 
 import "ds-test/test.sol";
 import './fab.sol';
 
 contract BinTest is DSTest {
     GemFab gemFab;
-    RGemFab rGemFab;
     VoxFab voxFab;
     TubFab tubFab;
     TapFab tapFab;
@@ -16,18 +15,16 @@ contract BinTest is DSTest {
     DaiFab daiFab;
 
     DSToken gem;
-    RequestableToken gov;
+    DSToken gov;
     DSValue pip;
     DSValue pep;
     address pit;
+    address _sai = address(0x5c15741c7abb1b0e8fb0bd41b5ed8c17219926a1);
 
     DSRoles authority;
 
-    address rootchain;
-
     function setUp() public {
         gemFab = new GemFab();
-        rGemFab = new RGemFab();
         voxFab = new VoxFab();
         tubFab = new TubFab();
         tapFab = new TapFab();
@@ -36,12 +33,12 @@ contract BinTest is DSTest {
         dadFab = new DadFab();
 
         uint startGas = msg.gas;
-        daiFab = new DaiFab(gemFab, rGemFab, voxFab, tubFab, tapFab, topFab, momFab, dadFab, this);
+        daiFab = new DaiFab(gemFab, voxFab, tubFab, tapFab, topFab, momFab, dadFab);
         uint endGas = msg.gas;
-        emit log_named_uint('Deploy DaiFab', startGas - endGas);
+        log_named_uint('Deploy DaiFab', startGas - endGas);
 
         gem = new DSToken('GEM');
-        gov = new RequestableToken('GOV', this);
+        gov = new DSToken('GOV');
         pip = new DSValue();
         pep = new DSValue();
         pit = address(0x123);
@@ -51,58 +48,58 @@ contract BinTest is DSTest {
 
     function testMake() public {
         uint startGas = msg.gas;
-        daiFab.makeTokens();
+        daiFab.makeTokens(_sai);
         uint endGas = msg.gas;
-        emit log_named_uint('Make Tokens', startGas - endGas);
+        log_named_uint('Make Tokens', startGas - endGas);
 
         startGas = msg.gas;
         daiFab.makeVoxTub(gem, gov, pip, pep, pit);
         endGas = msg.gas;
-        emit log_named_uint('Make Vox Tub', startGas - endGas);
+        log_named_uint('Make Vox Tub', startGas - endGas);
 
         startGas = msg.gas;
         daiFab.makeTapTop();
         endGas = msg.gas;
-        emit log_named_uint('Make Tap Top', startGas - endGas);
+        log_named_uint('Make Tap Top', startGas - endGas);
 
         startGas = msg.gas;
         daiFab.configParams();
         endGas = msg.gas;
-        emit log_named_uint('Config Params', startGas - endGas);
+        log_named_uint('Config Params', startGas - endGas);
 
         startGas = msg.gas;
         daiFab.verifyParams();
         endGas = msg.gas;
-        emit log_named_uint('Verify Params', startGas - endGas);
+        log_named_uint('Verify Params', startGas - endGas);
 
         startGas = msg.gas;
         daiFab.configAuth(authority);
         endGas = msg.gas;
-        emit log_named_uint('Config Auth', startGas - endGas);
+        log_named_uint('Config Auth', startGas - endGas);
     }
 
     function testFailStep() public {
-        daiFab.makeTokens();
-        daiFab.makeTokens();
+        daiFab.makeTokens(_sai);
+        daiFab.makeTokens(_sai);
     }
 
     function testFailStep2() public {
-        daiFab.makeTokens();
+        daiFab.makeTokens(_sai);
         daiFab.makeTapTop();
     }
 
     function testFailStep3() public {
-        daiFab.makeTokens();
+        daiFab.makeTokens(_sai);
         daiFab.makeVoxTub(gem, gov, pip, pep, pit);
         daiFab.makeTapTop();
         daiFab.makeVoxTub(gem, gov, pip, pep, pit);
     }
 
     function testFailStep4() public {
-        daiFab.makeTokens();
+        daiFab.makeTokens(_sai);
         daiFab.makeVoxTub(gem, gov, pip, pep, pit);
         daiFab.makeTapTop();
         daiFab.configAuth(authority);
-        daiFab.makeTokens();
+        daiFab.makeTokens(_sai);
     }
 }

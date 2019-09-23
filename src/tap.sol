@@ -22,7 +22,7 @@ pragma solidity ^0.4.18;
 import "./tub.sol";
 
 contract SaiTap is DSThing {
-    RequestableToken  public  sai;
+    DSToken  public  sai;
     DSToken  public  sin;
     DSToken  public  skr;
 
@@ -47,7 +47,7 @@ contract SaiTap is DSThing {
     }
 
 
-    constructor (SaiTub tub_) public {
+    function SaiTap(SaiTub tub_) public {
         tub = tub_;
 
         sai = tub.sai();

@@ -27,7 +27,7 @@ contract SaiTop is DSThing {
     SaiTub   public  tub;
     SaiTap   public  tap;
 
-    RequestableToken  public  sai;
+    DSToken  public  sai;
     DSToken  public  sin;
     DSToken  public  skr;
     ERC20    public  gem;
@@ -37,7 +37,7 @@ contract SaiTop is DSThing {
     uint256  public  caged;
     uint256  public  cooldown = 6 hours;
 
-    constructor (SaiTub tub_, SaiTap tap_) public {
+    function SaiTop(SaiTub tub_, SaiTap tap_) public {
         tub = tub_;
         tap = tap_;
 

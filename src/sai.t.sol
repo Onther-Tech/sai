@@ -7,7 +7,6 @@ import "ds-math/math.sol";
 import 'ds-token/token.sol';
 import 'ds-roles/roles.sol';
 import 'ds-value/value.sol';
-import "requestable-ds-token/RequestableToken.sol";
 
 import './weth9.sol';
 import './mom.sol';
@@ -33,17 +32,17 @@ contract TestWarp is DSNote {
 
 contract DevTub is SaiTub, TestWarp {
     function DevTub(
-        RequestableToken  sai_,
+        DSToken  sai_,
         DSToken  sin_,
         DSToken  skr_,
         ERC20    gem_,
-        RequestableToken  gov_,
+        DSToken  gov_,
         DSValue  pip_,
         DSValue  pep_,
         SaiVox   vox_,
         address  pit_
     ) public
-    SaiTub(sai_, sin_, skr_, gem_, gov_, pip_, pep_, vox_, pit_) {}
+      SaiTub(sai_, sin_, skr_, gem_, gov_, pip_, pep_, vox_, pit_) {}
 }
 
 contract DevTop is SaiTop, TestWarp {
@@ -62,7 +61,7 @@ contract DevVoxFab {
 }
 
 contract DevTubFab {
-    function newTub(RequestableToken sai, DSToken sin, DSToken skr, DSToken gem, RequestableToken gov, DSValue pip, DSValue pep, SaiVox vox, address pit) public returns (DevTub tub) {
+    function newTub(DSToken sai, DSToken sin, DSToken skr, DSToken gem, DSToken gov, DSValue pip, DSValue pep, SaiVox vox, address pit) public returns (DevTub tub) {
         tub = new DevTub(sai, sin, skr, gem, gov, pip, pep, vox, pit);
         tub.setOwner(msg.sender);
     }
@@ -97,7 +96,7 @@ contract DevDadFab {
 
 contract FakePerson {
     SaiTap  public tap;
-    RequestableToken public sai;
+    DSToken public sai;
 
     function FakePerson(SaiTap _tap) public {
         tap = _tap;
@@ -119,16 +118,18 @@ contract SaiTestBase is DSTest, DSMath {
     SaiMom   mom;
 
     WETH9    gem;
-    RequestableToken  sai;
+    DSToken  sai;
     DSToken  sin;
     DSToken  skr;
-    RequestableToken  gov;
+    DSToken  gov;
 
     GemPit   pit;
 
     DSValue  pip;
     DSValue  pep;
     DSRoles  dad;
+
+    address _sai = address(0x5c15741c7abb1b0e8fb0bd41b5ed8c17219926a1);
 
     function ray(uint256 wad) internal pure returns (uint256) {
         return wad * 10 ** 9;
@@ -144,12 +145,6 @@ contract SaiTestBase is DSTest, DSMath {
         if (address(tkn) == address(gov)) pep.poke(bytes32(price));
         else if (address(tkn) == address(gem)) mark(price);
     }
-
-    function rmark(RequestableToken tkn, uint price) internal {
-        if (address(tkn) == address(gov)) pep.poke(bytes32(price));
-        else if (address(tkn) == address(gem)) mark(price);
-    }
-
     function warp(uint256 age) internal {
         vox.warp(age);
         tub.warp(age);
@@ -158,7 +153,6 @@ contract SaiTestBase is DSTest, DSMath {
 
     function setUp() public {
         GemFab gemFab = new GemFab();
-        RGemFab rGemFab = new RGemFab();
         DevVoxFab voxFab = new DevVoxFab();
         DevTubFab tubFab = new DevTubFab();
         TapFab tapFab = new TapFab();
@@ -166,16 +160,16 @@ contract SaiTestBase is DSTest, DSMath {
         MomFab momFab = new MomFab();
         DevDadFab dadFab = new DevDadFab();
 
-        DaiFab daiFab = new DaiFab(gemFab, rGemFab, VoxFab(voxFab), TubFab(tubFab), tapFab, TopFab(topFab), momFab, DadFab(dadFab), this);
+        DaiFab daiFab = new DaiFab(gemFab, VoxFab(voxFab), TubFab(tubFab), tapFab, TopFab(topFab), momFab, DadFab(dadFab));
 
         gem = new WETH9();
         gem.deposit.value(100 ether)();
-        gov = new RequestableToken('GOV', this);
+        gov = new DSToken('GOV');
         pip = new DSValue();
         pep = new DSValue();
         pit = new GemPit();
 
-        daiFab.makeTokens();
+        daiFab.makeTokens(_sai);
         daiFab.makeVoxTub(ERC20(gem), gov, pip, pep, pit);
         daiFab.makeTapTop();
         daiFab.configParams();
@@ -184,7 +178,7 @@ contract SaiTestBase is DSTest, DSMath {
         authority.setRootUser(this, true);
         daiFab.configAuth(authority);
 
-        sai = new RequestableToken('SAI', this);
+        sai = DSToken(daiFab.sai());
         sin = DSToken(daiFab.sin());
         skr = DSToken(daiFab.skr());
         vox = DevVox(daiFab.vox());
@@ -203,7 +197,7 @@ contract SaiTestBase is DSTest, DSMath {
         skr.approve(tap);
 
         mark(1 ether);
-        rmark(gov, 1 ether);
+        mark(gov, 1 ether);
 
         mom.setCap(20 ether);
         mom.setAxe(ray(1 ether));
@@ -2374,7 +2368,7 @@ contract PitTest is SaiTestBase {
         gov.setAuthority(guard);
 
         assertEq(gov.balanceOf(pit), 1 ether);
-        pit.rburn(gov);
+        pit.burn(gov);
         assertEq(gov.balanceOf(pit), 0 ether);
     }
 }
@@ -2556,12 +2550,12 @@ contract DustTest is SaiTestBase {
 
 contract SymbologyTest is SaiTestBase {
     function testSymbology() public {
-        assertEq(sai.symbol(), 'GST');
+        assertEq(sai.symbol(), 'DAI');
         assertEq(sin.symbol(), 'SIN');
-        assertEq(skr.symbol(), 'PRBG');
+        assertEq(skr.symbol(), 'PETH');
 
-        assertEq(sai.name(), 'Gstar Stablecoin v1.0');
+        assertEq(sai.name(), 'Dai Stablecoin v1.0');
         assertEq(sin.name(), 'SIN');
-        assertEq(skr.name(), 'Pooled RBG');
+        assertEq(skr.name(), 'Pooled Ether');
     }
 }

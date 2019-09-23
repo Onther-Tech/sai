@@ -2,8 +2,6 @@ pragma solidity ^0.4.18;
 
 import "ds-auth/auth.sol";
 import 'ds-token/token.sol';
-import "requestable-ds-token/RequestableToken.sol";
-import "requestable-wrapper-token/RequestableWrapperToken.sol";
 import 'ds-guard/guard.sol';
 import 'ds-roles/roles.sol';
 import 'ds-value/value.sol';
@@ -17,22 +15,15 @@ contract GemFab {
     }
 }
 
-contract RGemFab {
-    function newTok(bytes32 name, address rootchain_) public returns (RequestableToken token){
-        token = new RequestableToken(name, rootchain_);
-        token.setOwner(msg.sender);
-    }
-}
-
 contract VoxFab {
     function newVox() public returns (SaiVox vox) {
-        vox = new SaiVox(10 ** 27); // par - dai target price
+        vox = new SaiVox(10 ** 27);
         vox.setOwner(msg.sender);
     }
 }
 
 contract TubFab {
-    function newTub(RequestableToken sai, DSToken sin, DSToken skr, ERC20 gem, RequestableToken gov, DSValue pip, DSValue pep, SaiVox vox, address pit) public returns (SaiTub tub) {
+    function newTub(DSToken sai, DSToken sin, DSToken skr, ERC20 gem, DSToken gov, DSValue pip, DSValue pep, SaiVox vox, address pit) public returns (SaiTub tub) {
         tub = new SaiTub(sai, sin, skr, gem, gov, pip, pep, vox, pit);
         tub.setOwner(msg.sender);
     }
@@ -68,7 +59,6 @@ contract DadFab {
 
 contract DaiFab is DSAuth {
     GemFab public gemFab;
-    RGemFab public rGemFab;
     VoxFab public voxFab;
     TapFab public tapFab;
     TubFab public tubFab;
@@ -76,7 +66,7 @@ contract DaiFab is DSAuth {
     MomFab public momFab;
     DadFab public dadFab;
 
-    RequestableToken public sai;
+    DSToken public sai;
     DSToken public sin;
     DSToken public skr;
 
@@ -88,34 +78,31 @@ contract DaiFab is DSAuth {
     SaiMom public mom;
     DSGuard public dad;
 
-    address rootchain;
-
     uint8 public step = 0;
 
-    function DaiFab(GemFab gemFab_, RGemFab rGemFab_, VoxFab voxFab_, TubFab tubFab_, TapFab tapFab_, TopFab topFab_, MomFab momFab_, DadFab dadFab_, address rootchain_) public {
+    function DaiFab(GemFab gemFab_, VoxFab voxFab_, TubFab tubFab_, TapFab tapFab_, TopFab topFab_, MomFab momFab_, DadFab dadFab_) public {
         gemFab = gemFab_;
-        rGemFab = rGemFab_;
         voxFab = voxFab_;
         tubFab = tubFab_;
         tapFab = tapFab_;
         topFab = topFab_;
         momFab = momFab_;
         dadFab = dadFab_;
-        rootchain = rootchain_;
     }
 
-    function makeTokens() public auth {
+    function makeTokens(address _sai) public auth {
         require(step == 0);
-        sai = rGemFab.newTok('GST', rootchain);
+        // sai = gemFab.newTok('GST');
+        sai = DSToken(_sai);
         sin = gemFab.newTok('SIN');
         skr = gemFab.newTok('PRBG');
-        sai.setName('GST Stablecoin v1.0');
+        // sai.setName('GST Stablecoin v1.0');
         sin.setName('SIN');
         skr.setName('Pooled RBG');
         step += 1;
     }
 
-    function makeVoxTub(ERC20 gem, RequestableToken gov, DSValue pip, DSValue pep, address pit) public auth {
+    function makeVoxTub(ERC20 gem, DSToken gov, DSValue pip, DSValue pep, address pit) public auth {
         require(step == 1);
         require(address(gem) != 0x0);
         require(address(gov) != 0x0);
@@ -153,7 +140,7 @@ contract DaiFab is DSAuth {
     function configParams() public auth {
         require(step == 3);
 
-        tub.mold("cap", 0);
+        tub.mold("cap", 1000000000000000000000000000000);
         tub.mold("mat", ray(1.5  ether));
         tub.mold("axe", ray(1.05 ether));
         tub.mold("fee", 1000000000632615615351785100);  // 2% / year
@@ -168,7 +155,7 @@ contract DaiFab is DSAuth {
     function verifyParams() public auth {
         require(step == 4);
 
-        require(tub.cap() == 0);
+        require(tub.cap() == 1000000000000000000000000000000);
         require(tub.mat() == 1500000000000000000000000000);
         require(tub.axe() == 1050000000000000000000000000);
         require(tub.fee() == 1000000000632615615351785100);
@@ -196,8 +183,8 @@ contract DaiFab is DSAuth {
         tub.setOwner(0);
         tap.setAuthority(dad);
         tap.setOwner(0);
-        sai.setAuthority(dad);
-        sai.setOwner(0);
+        // sai.setAuthority(dad);
+        // sai.setOwner(0);
         sin.setAuthority(dad);
         sin.setOwner(0);
         skr.setAuthority(dad);

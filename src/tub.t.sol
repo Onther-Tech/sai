@@ -5,7 +5,7 @@ pragma solidity ^0.4.18;
 import './tub.sol';
 import './tap.sol';
 import 'ds-guard/guard.sol';
-import 'ds-test/test.sol';
+import "ds-test/test.sol";
 
 contract TubTest is DSTest, DSThing {
     address tap;
@@ -17,18 +17,18 @@ contract TubTest is DSTest, DSThing {
     DSValue pip;
     DSValue pep;
 
-    RequestableToken sai;
+    DSToken sai;
     DSToken sin;
     DSToken skr;
     DSToken gem;
-    RequestableToken gov;
+    DSToken gov;
 
     function setUp() public {
-        sai = new RequestableToken("SAI", this);
+        sai = new DSToken("SAI");
         sin = new DSToken("SIN");
         skr = new DSToken("SKR");
         gem = new DSToken("GEM");
-        gov = new RequestableToken("GOV", this);
+        gov = new DSToken("GOV");
         pip = new DSValue();
         pep = new DSValue();
         dad = new DSGuard();
